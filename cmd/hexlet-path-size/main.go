@@ -12,17 +12,36 @@ import (
 )
 
 func main() {
+	flags := []cli.Flag{
+		&cli.BoolFlag{
+			Name:    "human",
+			Usage:   "human-readable sizes (auto-select unit)",
+			Value:   false,
+			Aliases: []string{"H"},
+		},
+	}
+
 	cmd := &cli.Command{
-		Name:  "hexlet-path-size",
-		Usage: "print size of a file or directory;",
-		Action: func(context.Context, *cli.Command) error {
-			if len(os.Args) < 2 {
+		Name:            "hexlet-path-size",
+		Usage:           "print size of a file or directory;",
+		Flags:           flags,
+		HideHelpCommand: true,
+		Arguments: []cli.Argument{
+			&cli.StringArg{
+				Name:      "path",
+				Value:     "",
+				UsageText: "path to file or directory",
+			},
+		},
+		Action: func(ctx context.Context, cmd *cli.Command) error {
+			path := cmd.StringArg("path")
+			human := cmd.Bool("human")
+
+			if path == "" {
 				return errors.New("file path not found")
 			}
 
-			path := os.Args[1]
-
-			resStr, err := code.GetPathSize(path, false, true, false)
+			resStr, err := code.GetPathSize(path, false, human, false)
 
 			if err != nil {
 				return err

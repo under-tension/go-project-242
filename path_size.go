@@ -2,13 +2,24 @@ package code
 
 import (
 	"fmt"
+	"math"
 	"os"
 )
 
 func GetPathSize(path string, recursive, human, all bool) (string, error) {
 	size, err := getSize(path, false, false)
 
-	result := fmt.Sprintf("%d\t%s", size, path)
+	if err != nil {
+		return "", err
+	}
+
+	sizeAndUnit, err := FormatSize(size, human)
+
+	if err != nil {
+		return "", err
+	}
+
+	result := fmt.Sprintf("%s\t%s", sizeAndUnit, path)
 
 	return result, err
 }
@@ -47,4 +58,30 @@ func getSize(path string, recursive, all bool) (int64, error) {
 	}
 
 	return size, nil
+}
+
+func FormatSize(size int64, human bool) (string, error) {
+	if !human {
+		return fmt.Sprintf("%dB", size), nil
+	}
+
+	unitNames := []string{"B", "KB", "MB", "GB", "TB", "PB", "EB"}
+
+	calcSize := float64(size)
+	resultUnitName := "B"
+	for _, unitName := range unitNames {
+		resultUnitName = unitName
+
+		if calcSize < 1024.0 {
+			break
+		}
+
+		calcSize /= 1024.0
+	}
+
+	if calcSize != math.Trunc(calcSize) {
+		return fmt.Sprintf("%.1f%s", calcSize, resultUnitName), nil
+	}
+
+	return fmt.Sprintf("%.0f%s", calcSize, resultUnitName), nil
 }
