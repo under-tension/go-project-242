@@ -26,7 +26,7 @@ make build
     </tr>
     <tr>
         <td>--human</td>
-        <td>-h</td>
+        <td>-H</td>
         <td>human-readable sizes</td>
     </tr>
     <tr>
