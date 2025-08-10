@@ -7,44 +7,33 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestGetSizeForEmptyDir(t *testing.T) {
-	require := require.New(t)
+func TestGetSize(t *testing.T) {
+	tests := []struct {
+		name      string
+		path      string
+		recursive bool
+		all       bool
+		expected  int64
+	}{
+		// recursive: false; all: false
+		{"Empty dir: recursive: false; all: false", "testdata/empty_dir", false, false, 0},
+		{"Not empty dir: recursive: false; all: false", "testdata/size_9_byte", false, false, 9},
+		{"Empty file: recursive: false; all: false", "testdata/empty_file.txt", false, false, 0},
+		{"Not empty file: recursive: false; all: false", "testdata/size_12_byte.txt", false, false, 12},
+		{"Not empty dir: recursive: false; all: false", "testdata/size_9_byte", false, false, 9},
+		{"Dir with hide file: recursive: false; all: false", "testdata/dir_with_hide_file", false, false, 0},
 
-	var a int64 = 0
-	b, err := getSize("testdata/empty_dir", false, false)
+		// recursive: false; all: true
+		{"Dir with hide file: recursive: false; all: true", "testdata/dir_with_hide_file", false, true, 10},
+	}
 
-	require.NoError(err)
-	require.Equal(a, b, "Wrong size for empty dir")
-}
-
-func TestGetSizeForNotEmptyDir(t *testing.T) {
-	require := require.New(t)
-
-	var a int64 = 9
-	b, err := getSize("testdata/size_9_byte", false, false)
-
-	require.NoError(err)
-	require.Equal(a, b, "Wrong size for empty dir")
-}
-
-func TestGetSizeForEmptyFile(t *testing.T) {
-	require := require.New(t)
-
-	var a int64 = 0
-	b, err := getSize("testdata/empty_file.txt", false, false)
-
-	require.NoError(err)
-	require.Equal(a, b, "Wrong size for empty dir")
-}
-
-func TestGetSizeForNotEmptyFile(t *testing.T) {
-	require := require.New(t)
-
-	var a int64 = 12
-	b, err := getSize("testdata/size_12_byte.txt", false, false)
-
-	require.NoError(err)
-	require.Equal(a, b, "Wrong size for empty dir")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := getSize(tt.path, tt.recursive, tt.all)
+			require.NoError(t, err)
+			require.Equal(t, tt.expected, got)
+		})
+	}
 }
 
 func TestFormatSize(t *testing.T) {

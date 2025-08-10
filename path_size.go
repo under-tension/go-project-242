@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"strings"
 )
 
 func GetPathSize(path string, recursive, human, all bool) (string, error) {
-	size, err := getSize(path, false, false)
+	size, err := getSize(path, false, all)
 
 	if err != nil {
 		return "", err
@@ -42,6 +43,10 @@ func getSize(path string, recursive, all bool) (int64, error) {
 
 		for _, entry := range d_entry {
 			if entry.IsDir() {
+				continue
+			}
+
+			if !all && strings.HasPrefix(entry.Name(), ".") {
 				continue
 			}
 
