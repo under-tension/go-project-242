@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
 func GetPathSize(path string, recursive, human, all bool) (string, error) {
-	size, err := getSize(path, false, all)
+	size, err := getSize(path, recursive, all)
 
 	if err != nil {
 		return "", err
@@ -42,7 +43,7 @@ func getSize(path string, recursive, all bool) (int64, error) {
 		}
 
 		for _, entry := range d_entry {
-			if entry.IsDir() {
+			if !recursive && entry.IsDir() {
 				continue
 			}
 
@@ -50,13 +51,24 @@ func getSize(path string, recursive, all bool) (int64, error) {
 				continue
 			}
 
-			f_info, err := entry.Info()
+			if entry.IsDir() {
 
-			if err != nil {
-				return 0, err
+				dirSize, err := getSize(filepath.Join(path, entry.Name()), recursive, all)
+
+				if err != nil {
+					return 0, err
+				}
+
+				size += dirSize
+			} else {
+				f_info, err := entry.Info()
+
+				if err != nil {
+					return 0, err
+				}
+
+				size += f_info.Size()
 			}
-
-			size += f_info.Size()
 		}
 	} else {
 		size = f_info.Size()

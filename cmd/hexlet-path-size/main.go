@@ -25,6 +25,12 @@ func main() {
 			Value:   false,
 			Aliases: []string{"a"},
 		},
+		&cli.BoolFlag{
+			Name:    "recursive",
+			Usage:   "recursive size of directories",
+			Value:   false,
+			Aliases: []string{"r"},
+		},
 	}
 
 	cmd := &cli.Command{
@@ -43,12 +49,14 @@ func main() {
 			path := cmd.StringArg("path")
 			human := cmd.Bool("human")
 			all := cmd.Bool("all")
+			recursive := cmd.Bool("recursive")
 
 			if path == "" {
 				return errors.New("file path not found")
 			}
+			fmt.Println(recursive)
 
-			resStr, err := code.GetPathSize(path, false, human, all)
+			resStr, err := code.GetPathSize(path, recursive, human, all)
 
 			if err != nil {
 				return err

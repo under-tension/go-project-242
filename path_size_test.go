@@ -25,6 +25,12 @@ func TestGetSize(t *testing.T) {
 
 		// recursive: false; all: true
 		{"Dir with hide file: recursive: false; all: true", "testdata/dir_with_hide_file", false, true, 10},
+
+		// recursive: true; all: false
+		{"Recursive scanning dir: recursive: true; all: false", "testdata/main_dir", true, false, 9},
+
+		// recursive: true; all: true
+		{"Recursive scanning dir: recursive: true; all: true", "testdata/main_dir", true, true, 15},
 	}
 
 	for _, tt := range tests {
