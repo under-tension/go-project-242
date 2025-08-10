@@ -8,6 +8,9 @@ import (
 	"strings"
 )
 
+var unitNames []string = []string{"B", "KB", "MB", "GB", "TB", "PB", "EB"}
+var divForNextThreshold float64 = 1024.0
+
 func GetPathSize(path string, recursive, human, all bool) (string, error) {
 	size, err := getSize(path, recursive, all)
 
@@ -61,13 +64,13 @@ func getSize(path string, recursive, all bool) (int64, error) {
 
 				size += dirSize
 			} else {
-				f_info, err := entry.Info()
+				fileSize, err := getSize(filepath.Join(path, entry.Name()), recursive, all)
 
 				if err != nil {
 					return 0, err
 				}
 
-				size += f_info.Size()
+				size += fileSize
 			}
 		}
 	} else {
@@ -82,18 +85,16 @@ func FormatSize(size int64, human bool) (string, error) {
 		return fmt.Sprintf("%dB", size), nil
 	}
 
-	unitNames := []string{"B", "KB", "MB", "GB", "TB", "PB", "EB"}
-
 	calcSize := float64(size)
 	resultUnitName := "B"
 	for _, unitName := range unitNames {
 		resultUnitName = unitName
 
-		if calcSize < 1024.0 {
+		if calcSize < divForNextThreshold {
 			break
 		}
 
-		calcSize /= 1024.0
+		calcSize /= divForNextThreshold
 	}
 
 	if calcSize != math.Trunc(calcSize) {
