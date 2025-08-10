@@ -1,6 +1,10 @@
+go >= 1.24.4
+
 # da
 
 **da** (aka disk analyzer) a project created for educational purposes to analyze disk space in the form of a file or directory.
+
+<img src="./docs/assets/demo-install.gif" alt="Video instruction" width="600" />
 
 # Building
 ```
@@ -37,6 +41,12 @@ make build
     </tr>
 </table>
 
+# Testing
+
+run all unit tests
+```
+make test
+```
 
 ### Tests and linter status when latest merge in master:
 [![Actions Status](https://github.com/under-tension/go-project-242/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/under-tension/go-project-242/actions)
