@@ -19,6 +19,12 @@ func main() {
 			Value:   false,
 			Aliases: []string{"H"},
 		},
+		&cli.BoolFlag{
+			Name:    "all",
+			Usage:   "include hidden files and directories",
+			Value:   false,
+			Aliases: []string{"a"},
+		},
 	}
 
 	cmd := &cli.Command{
@@ -36,12 +42,13 @@ func main() {
 		Action: func(ctx context.Context, cmd *cli.Command) error {
 			path := cmd.StringArg("path")
 			human := cmd.Bool("human")
+			all := cmd.Bool("all")
 
 			if path == "" {
 				return errors.New("file path not found")
 			}
 
-			resStr, err := code.GetPathSize(path, false, human, false)
+			resStr, err := code.GetPathSize(path, false, human, all)
 
 			if err != nil {
 				return err
