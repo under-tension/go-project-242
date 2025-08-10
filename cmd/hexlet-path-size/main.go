@@ -54,7 +54,6 @@ func main() {
 			if path == "" {
 				return errors.New("file path not found")
 			}
-			fmt.Println(recursive)
 
 			resStr, err := code.GetPathSize(path, recursive, human, all)
 
