@@ -2,12 +2,12 @@ package code
 
 import (
 	"fmt"
-	"math"
 	"os"
 	"path/filepath"
 	"strings"
 )
 
+var minUnitName = "B"
 var unitNames []string = []string{"B", "KB", "MB", "GB", "TB", "PB", "EB"}
 var divForNextThreshold float64 = 1024.0
 
@@ -18,15 +18,13 @@ func GetPathSize(path string, recursive, human, all bool) (string, error) {
 		return "", err
 	}
 
-	sizeAndUnit, err := FormatSize(size, human)
+	res, err := FormatSize(size, human)
 
 	if err != nil {
 		return "", err
 	}
 
-	result := fmt.Sprintf("%s\t%s", sizeAndUnit, path)
-
-	return result, err
+	return res, err
 }
 
 func getSize(path string, recursive, all bool) (int64, error) {
@@ -97,9 +95,9 @@ func FormatSize(size int64, human bool) (string, error) {
 		calcSize /= divForNextThreshold
 	}
 
-	if calcSize != math.Trunc(calcSize) {
-		return fmt.Sprintf("%.1f%s", calcSize, resultUnitName), nil
+	if resultUnitName == minUnitName {
+		return fmt.Sprintf("%.0f%s", calcSize, resultUnitName), nil
 	}
 
-	return fmt.Sprintf("%.0f%s", calcSize, resultUnitName), nil
+	return fmt.Sprintf("%.1f%s", calcSize, resultUnitName), nil
 }
