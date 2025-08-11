@@ -55,13 +55,15 @@ func main() {
 				return errors.New("file path not found")
 			}
 
-			resStr, err := code.GetPathSize(path, recursive, human, all)
+			size, err := code.GetPathSize(path, recursive, human, all)
 
 			if err != nil {
 				return err
 			}
 
-			fmt.Println(resStr)
+			res := fmt.Sprintf("%s\t%s", size, path)
+
+			fmt.Println(res)
 			return nil
 		},
 	}
